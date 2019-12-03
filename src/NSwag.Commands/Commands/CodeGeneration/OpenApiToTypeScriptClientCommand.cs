@@ -352,6 +352,14 @@ namespace NSwag.Commands.CodeGeneration
             set { Settings.QueryNullValue = value; }
         }
 
+        [Argument(Name = "AllowAllSuccessCodes", IsRequired = false,
+            Description = "When set to true, all Success codes (200-299) will be parsed as Successfull codes.")]
+        public bool AllowAllSuccessCodes
+        {
+            get { return Settings.AllowAllSuccessCodes; }
+            set { Settings.AllowAllSuccessCodes = value; }
+        }
+
         [Argument(Name = "InlineNamedDictionaries", Description = "Inline named dictionaries (default: false).", IsRequired = false)]
         public bool InlineNamedDictionaries
         {

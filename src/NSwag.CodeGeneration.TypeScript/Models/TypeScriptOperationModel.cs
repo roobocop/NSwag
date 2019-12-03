@@ -66,12 +66,43 @@ namespace NSwag.CodeGeneration.TypeScript.Models
         {
             get
             {
-                var response = GetSuccessResponse();
-                var isNullable = response.Value?.IsNullable(_settings.CodeGeneratorSettings.SchemaType) == true;
+                //var response = GetSuccessResponse();
+                //var isNullable = response.Value?.IsNullable(_settings.CodeGeneratorSettings.SchemaType) == true;
 
-                var resultType = isNullable && SupportsStrictNullChecks && UnwrappedResultType != "void" && UnwrappedResultType != "null" ?
-                    UnwrappedResultType + " | null" :
-                    UnwrappedResultType;
+                //var resultType = isNullable && SupportsStrictNullChecks && UnwrappedResultType != "void" && UnwrappedResultType != "null" ?
+                //    UnwrappedResultType + " | null" :
+                //    UnwrappedResultType;
+                string resultType = "";
+                var isNullable = false;
+
+                if (!_settings.AllowAllSuccessCodes)
+                {
+                    var response = GetSuccessResponse();
+                    isNullable = response?.IsNullable(_settings.CodeGeneratorSettings.SchemaType) == true;
+
+                    resultType = UnwrappedResultType;
+
+                } else
+                {
+                    foreach (string _responseStatus in _operation.ActualResponses.Keys)
+                    {
+                        SwaggerResponse _response = _operation.ActualResponses[_responseStatus];
+                        if (_responseStatus.StartsWith("2"))
+                        {
+                            var _isNullable = _response.IsNullable(_settings.CodeGeneratorSettings.SchemaType);
+                            if (_isNullable)
+                                isNullable = true;
+                            var _type = _generator.GetTypeName(_response.ActualResponseSchema, _isNullable, "Response");
+                            resultType += (resultType != "" ? " | " : "") + _type;
+                        }
+                        
+                        if (resultType == "")
+                            resultType = "void";
+                    }
+                }
+
+                if (isNullable && SupportsStrictNullChecks && UnwrappedResultType != "void" && UnwrappedResultType != "null")
+                    resultType += " | null";
 
                 if (WrapResponse)
                 {
