@@ -78,7 +78,7 @@ namespace NSwag.CodeGeneration.TypeScript.Models
                 if (!_settings.AllowAllSuccessCodes)
                 {
                     var response = GetSuccessResponse();
-                    isNullable = response?.IsNullable(_settings.CodeGeneratorSettings.SchemaType) == true;
+                    isNullable = response.Value?.IsNullable(_settings.CodeGeneratorSettings.SchemaType) == true;
 
                     resultType = UnwrappedResultType;
 
@@ -86,13 +86,13 @@ namespace NSwag.CodeGeneration.TypeScript.Models
                 {
                     foreach (string _responseStatus in _operation.ActualResponses.Keys)
                     {
-                        SwaggerResponse _response = _operation.ActualResponses[_responseStatus];
+                        OpenApiResponse _response = _operation.ActualResponses[_responseStatus];
                         if (_responseStatus.StartsWith("2"))
                         {
                             var _isNullable = _response.IsNullable(_settings.CodeGeneratorSettings.SchemaType);
                             if (_isNullable)
                                 isNullable = true;
-                            var _type = _generator.GetTypeName(_response.ActualResponseSchema, _isNullable, "Response");
+                            var _type = _generator.GetTypeName(_response.Schema, _isNullable, "Response");
                             resultType += (resultType != "" ? " | " : "") + _type;
                         }
                         
