@@ -112,7 +112,7 @@ namespace NSwag.CodeGeneration.TypeScript
         /// When set to true, all Success codes (200-299) will be parsed as Successfull codes.
         /// This can be used in cases where an operation returns both 200 and 204 status codes for example.
         /// </summary>
-        public bool AllowAllSuccessCodes { get; set; } = false;
+        public bool AllowAllSuccessCodes { get; set; } = true;
 
         internal ITemplate CreateTemplate(object model)
         {
