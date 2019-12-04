@@ -42,6 +42,10 @@ namespace NSwag
         [JsonProperty(PropertyName = "x-nullable", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool? IsNullableRaw { internal get; set; }
 
+        /// <summary>Gets the actual non-nullable response schema (either oneOf schema or the actual schema).</summary>
+        [JsonIgnore]
+        public JsonSchema ActualResponseSchema => ActualResponse.GetActualResponseSchema();
+
         /// <summary>Gets or sets the expected child schemas of the base schema (can be used for generating enhanced typings/documentation).</summary>
         [JsonProperty(PropertyName = "x-expectedSchemas", Order = 7, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public ICollection<JsonExpectedSchema> ExpectedSchemas { get; set; }
@@ -110,6 +114,17 @@ namespace NSwag
             }
 
             return ActualResponse.Schema?.IsNullable(schemaType) ?? false;
+        }
+
+        private JsonSchema GetActualResponseSchema()
+        {
+            if (Content.ContainsKey("application/octet-stream") && !Content.ContainsKey("application/json"))
+                return new JsonSchema { Type = JsonObjectType.File };
+
+            if ((Parent as OpenApiOperation)?.ActualProduces?.Contains("application/octet-stream") == true)
+                return new JsonSchema { Type = JsonObjectType.File };
+
+            return Schema?.ActualSchema;
         }
 
         /// <summary>Checks whether this is a binary/file response.</summary>

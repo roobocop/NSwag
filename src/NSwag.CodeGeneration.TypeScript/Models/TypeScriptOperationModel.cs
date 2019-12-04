@@ -92,7 +92,7 @@ namespace NSwag.CodeGeneration.TypeScript.Models
                             var _isNullable = _response.IsNullable(_settings.CodeGeneratorSettings.SchemaType);
                             if (_isNullable)
                                 isNullable = true;
-                            var _type = _generator.GetTypeName(_response.ActualResponse.Schema, _isNullable, "Response");
+                            var _type = _generator.GetTypeName(_response.ActualResponseSchema, _isNullable, "Response");
                             resultType += (resultType != "" ? " | " : "") + _type;
                         }
                         
